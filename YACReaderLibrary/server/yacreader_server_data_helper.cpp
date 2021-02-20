@@ -47,7 +47,7 @@ QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, c
     json["file_name"] = comic.name;
     json["file_size"] = QString::number(comic.getFileSize());
     json["hash"] = comic.info.hash;
-    json["current_page"] = comic.info.currentPage;
+    json[ "current_page" ]   = int( comic.info.currentPage );
     json["num_pages"] = comic.info.numPages.toInt();
     json["read"] = comic.info.read;
     json["cover_size_ratio"] = comic.info.coverSizeRatio.toFloat();

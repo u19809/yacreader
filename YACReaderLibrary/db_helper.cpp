@@ -606,7 +606,7 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
     updateComicInfo.bindValue(":characters", comicInfo->characters);
     updateComicInfo.bindValue(":notes", comicInfo->notes);
 
-    bool read = comicInfo->read || comicInfo->currentPage == comicInfo->numPages.toInt(); //if current page is the las page, the comic is read(completed)
+    bool read       = comicInfo->read || comicInfo->currentPage == comicInfo->numPages.toUInt(); //if current page is the las page, the comic is read(completed)
     comicInfo->read = read;
     updateComicInfo.bindValue(":read", read ? 1 : 0);
     updateComicInfo.bindValue(":id", comicInfo->id);

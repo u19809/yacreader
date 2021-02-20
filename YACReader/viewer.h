@@ -19,6 +19,8 @@
 
 #include "scroll_management.h"
 
+class QTapGesture;
+class QSwipeGesture;
 class ComicDB;
 class Comic;
 class MagnifyingGlass;
@@ -152,7 +154,14 @@ private:
     bool shouldOpenNext;
     bool shouldOpenPrevious;
 
-private:
+    //
+    // GESTURES
+    //
+
+    protected:
+    bool event( QEvent* event ) override;
+
+    private:
     //!Magnifying glass
     MagnifyingGlass *mglass;
     bool magnifyingGlassShowed;
@@ -173,9 +182,12 @@ private:
                            RIGHT };
     bool isEdge(scrollDirection d);
     void scrollZigzag(scrollDirection d1, scrollDirection d2, bool forward);
-    void scrollTo(int x, int y);
+    void scrollTo( int x, int y );
 
-public:
+    bool handleSwipeGesture( QSwipeGesture* Gesture );
+    bool handleTapGesture( QTapGesture* Gesture );
+
+    public:
     Viewer(QWidget *parent = nullptr);
     ~Viewer();
     const QPixmap *pixmap();

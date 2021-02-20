@@ -36,7 +36,7 @@ public:
     bool hasBeenOpened;
 
     //viewer
-    int currentPage;
+    unsigned int currentPage;
     int bookmark1;
     int bookmark2;
     int bookmark3;
@@ -145,7 +145,7 @@ public:
 
     Q_PROPERTY(bool hasBeenOpened MEMBER hasBeenOpened CONSTANT)
 
-    Q_PROPERTY(int currentPage MEMBER currentPage CONSTANT)
+    Q_PROPERTY( unsigned int currentPage MEMBER currentPage CONSTANT )
     Q_PROPERTY(int bookmark1 MEMBER bookmark1 CONSTANT)
     Q_PROPERTY(int bookmark2 MEMBER bookmark2 CONSTANT)
     Q_PROPERTY(int bookmark3 MEMBER bookmark3 CONSTANT)

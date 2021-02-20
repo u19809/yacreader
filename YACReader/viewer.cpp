@@ -20,6 +20,7 @@
 
 #include "opengl_checker.h"
 
+#include <QEvent>
 #include <QFile>
 
 Viewer::Viewer(QWidget *parent)
@@ -63,7 +64,14 @@ Viewer::Viewer(QWidget *parent)
     mglass = new MagnifyingGlass(Configuration::getConfiguration().getMagnifyingGlassSize(), this);
     mglass->hide();
     content->setMouseTracking(true);
-    setMouseTracking(true);
+    setMouseTracking( true );
+
+    //
+    // GESTURES
+    //
+
+    grabGesture( Qt::SwipeGesture );
+    grabGesture( Qt::TapGesture );
 
     showCursor();
 
@@ -1050,19 +1058,21 @@ void Viewer::animateHideTranslator()
 void Viewer::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
-        drag = true;
+        qDebug() << "MP";
+        drag        = true;
         yDragOrigin = event->y();
         xDragOrigin = event->x();
-        setCursor(Qt::ClosedHandCursor);
-        event->accept();
+        setCursor( Qt::ClosedHandCursor );
+        //     event->accept();
     }
 }
 
-void Viewer::mouseReleaseEvent(QMouseEvent *event)
+void Viewer::mouseReleaseEvent( QMouseEvent* event )
 {
+    qDebug() << "MR";
     drag = false;
-    setCursor(Qt::OpenHandCursor);
-    event->accept();
+    setCursor( Qt::OpenHandCursor );
+    // event->accept();
 }
 
 void Viewer::updateZoomRatio(int ratio)
@@ -1074,6 +1084,67 @@ void Viewer::updateZoomRatio(int ratio)
 bool Viewer::getIsMangaMode()
 {
     return doubleMangaPage;
+}
+
+bool Viewer::event( QEvent* event )
+{
+    if ( event->type() == QEvent::Gesture )
+    {
+        qDebug() << "GESTURE";
+
+        QGestureEvent* GEvent = static_cast< QGestureEvent* >( event );
+        if ( QGesture* Gest = GEvent->gesture( Qt::SwipeGesture ) )
+        {
+            return handleSwipeGesture( static_cast< QSwipeGesture* >( Gest ) );
+        }
+
+        if ( QGesture* Gest = GEvent->gesture( Qt::TapGesture ) )
+        {
+            return handleTapGesture( static_cast< QTapGesture* >( Gest ) );
+        }
+    }
+
+    return QScrollArea::event( event );
+}
+
+bool Viewer::handleSwipeGesture( QSwipeGesture* Gesture )
+{
+    if ( Gesture->state() != Qt::GestureFinished )
+    {
+        return true;
+    }
+
+    if ( Gesture->horizontalDirection() == QSwipeGesture::Left || Gesture->verticalDirection() == QSwipeGesture::Up )
+    {
+        // to next page
+        next();
+        return true;
+    }
+
+    if ( Gesture->horizontalDirection() == QSwipeGesture::Right || Gesture->verticalDirection() == QSwipeGesture::Down )
+    {
+        // to previous page
+        right();
+        return true;
+    }
+    return true;
+}
+
+bool Viewer::handleTapGesture( QTapGesture* Gesture )
+{
+    QPoint TapPosInWidget = mapFromGlobal( Gesture->position().toPoint() );
+    int    W              = width();
+    int    H              = height();
+
+    // TOP or LEFT
+    if ( QRect( 0, 0, W, H / 2 ).contains( TapPosInWidget ) || QRect( 0, 0, W / 2, H ).contains( TapPosInWidget ) )
+    {
+        left();
+        return true;
+    }
+
+    right();
+    return true;
 }
 
 void Viewer::updateConfig(QSettings *settings)

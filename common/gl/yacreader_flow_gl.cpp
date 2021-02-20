@@ -190,8 +190,14 @@ struct Preset pressetYACReaderFlowDownConfig = {
     22.f //zoom level
 };
 /*Constructor*/
-YACReaderFlowGL::YACReaderFlowGL(QWidget *parent, struct Preset p)
-    : QOpenGLWidget(/*QOpenGLWidget migration QGLFormat(QGL::SampleBuffers),*/ parent), numObjects(0), lazyPopulateObjects(-1), defaultTexture(nullptr), hasBeenInitialized(false), bUseVSync(false), flowRightToLeft(false)
+YACReaderFlowGL::YACReaderFlowGL( QWidget* parent, struct Preset p )
+    : QOpenGLWidget( /*QOpenGLWidget migration QGLFormat(QGL::SampleBuffers),*/ parent )
+    , defaultTexture( nullptr )
+    , numObjects( 0 )
+    , lazyPopulateObjects( -1 )
+    , hasBeenInitialized( false )
+    , bUseVSync( false )
+    , flowRightToLeft( false )
 {
     updateCount = 0;
     config = p;
